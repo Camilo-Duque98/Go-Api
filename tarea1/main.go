@@ -24,5 +24,6 @@ func main() {
 	
 		r := Routes.SetupRouter()
 	//running
+	fmt.Println("jsdakljdal")
 	r.Run()
    }
