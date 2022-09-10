@@ -1,11 +1,11 @@
 package Models
 
-type User struct {
-	Id      uint   `json:"Id"`
-	Name    string `json:"Name"`
-	Password   string `json:"Password"`
+type Cliente struct {
+	id_cliente      uint   `json:"id_cliente"`
+	nombre    string `json:"nombre"`
+	contrasena   string `json:"contrasena"`
 }
 
-func (b *User) TableName() string {
-	return "user"
+func (b *Cliente) TableName() string {
+	return "cliente"
 }

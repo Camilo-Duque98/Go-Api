@@ -21,7 +21,7 @@ func BuildDBConfig() *DBConfig{
 		Port: 3306,
 		User: "root",
 		Password: "123456789",
-		DBName: "first_go",
+		DBName: "tarea_1_db",
 	}
 	fmt.Println(&dbConfig)
 	return &dbConfig

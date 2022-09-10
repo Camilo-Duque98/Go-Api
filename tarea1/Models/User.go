@@ -8,39 +8,39 @@ import (
 )
 
 //GetAllUsers Fetch all user data
-func GetAllUsers(user *[]User) (err error) {
-	if err = Config.DB.Find(user).Error; err != nil {
+func GetAllUsers(cliente *[]Cliente) (err error) {
+	if err = Config.DB.Find(cliente).Error; err != nil {
 		return err
 	}
-	fmt.Println(user)
+	fmt.Println(cliente)
 	return nil
 }
 
 //CreateUser ... Insert New data
-func CreateUser(user *User) (err error) {
-	if err = Config.DB.Create(user).Error; err != nil {
+func CreateUser(cliente *Cliente) (err error) {
+	if err = Config.DB.Create(cliente).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
 //GetUserByID ... Fetch only one user by Id
-func GetUserByID(user *User, id string) (err error) {
-	if err = Config.DB.Where("id = ?", id).First(user).Error; err != nil {
+func GetUserByID(cliente *Cliente, id_cliente string) (err error) {
+	if err = Config.DB.Where("id_cliente = ?", id_cliente).First(cliente).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
 //UpdateUser ... Update user
-func UpdateUser(user *User, id string) (err error) {
-	fmt.Println(user)
-	Config.DB.Save(user)
+func UpdateUser(cliente *Cliente, id_cliente string) (err error) {
+	fmt.Println(cliente)
+	Config.DB.Save(cliente)
 	return nil
 }
 
 //DeleteUser ... Delete user
-func DeleteUser(user *User, id string) (err error) {
-	Config.DB.Where("id = ?", id).Delete(user)
+func DeleteUser(cliente *Cliente, id_cliente string) (err error) {
+	Config.DB.Where("id_cliente = ?", id_cliente).Delete(id_cliente)
 	return nil
 }

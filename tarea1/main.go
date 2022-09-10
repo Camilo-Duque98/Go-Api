@@ -20,7 +20,7 @@ func main() {
 	}
 	
 	defer Config.DB.Close()
-	Config.DB.AutoMigrate(&Models.User{})
+	Config.DB.AutoMigrate(&Models.Cliente{})
 	
 		r := Routes.SetupRouter()
 	//running

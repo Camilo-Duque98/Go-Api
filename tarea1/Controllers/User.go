@@ -10,65 +10,65 @@ import (
 
 //GetUsers ... Get all users
 func GetUsers(c *gin.Context) {
-	var user []Models.User
-	err := Models.GetAllUsers(&user)
+	var cliente []Models.Cliente
+	err := Models.GetAllUsers(&cliente)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
-		c.JSON(http.StatusOK, user)
+		c.JSON(http.StatusOK, cliente)
 	}
 }
 
 //CreateUser ... Create User
 func CreateUser(c *gin.Context) {
-	var user Models.User
-	c.BindJSON(&user)
-	err := Models.CreateUser(&user)
+	var cliente Models.Cliente
+	c.BindJSON(&cliente)
+	err := Models.CreateUser(&cliente)
 	if err != nil {
 		fmt.Println(err.Error())
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
-		c.JSON(http.StatusOK, user)
+		c.JSON(http.StatusOK, cliente)
 	}
 }
 
 //GetUserByID ... Get the user by id
 func GetUserByID(c *gin.Context) {
-	id := c.Params.ByName("id")
-	var user Models.User
-	err := Models.GetUserByID(&user, id)
+	id_cliente := c.Params.ByName("id_cliente")
+	var cliente Models.Cliente
+	err := Models.GetUserByID(&cliente, id_cliente)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
-		c.JSON(http.StatusOK, user)
+		c.JSON(http.StatusOK, cliente)
 	}
 }
 
 //UpdateUser ... Update the user information
 func UpdateUser(c *gin.Context) {
-	var user Models.User
-	id := c.Params.ByName("id")
-	err := Models.GetUserByID(&user, id)
+	var cliente Models.Cliente
+	id_cliente := c.Params.ByName("id_cliente")
+	err := Models.GetUserByID(&cliente, id_cliente)
 	if err != nil {
-		c.JSON(http.StatusNotFound, user)
+		c.JSON(http.StatusNotFound, cliente)
 	}
-	c.BindJSON(&user)
-	err = Models.UpdateUser(&user, id)
+	c.BindJSON(&cliente)
+	err = Models.UpdateUser(&cliente, id_cliente)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
-		c.JSON(http.StatusOK, user)
+		c.JSON(http.StatusOK, cliente)
 	}
 }
 
 //DeleteUser ... Delete the user
 func DeleteUser(c *gin.Context) {
-	var user Models.User
-	id := c.Params.ByName("id")
-	err := Models.DeleteUser(&user, id)
+	var cliente Models.Cliente
+	id_cliente := c.Params.ByName("id_cliente")
+	err := Models.DeleteUser(&cliente, id_cliente)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
-		c.JSON(http.StatusOK, gin.H{"id " + id: "is deleted"})
+		c.JSON(http.StatusOK, gin.H{"id " + id_cliente: "is deleted"})
 	}
 }
