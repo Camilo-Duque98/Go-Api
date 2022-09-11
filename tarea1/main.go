@@ -1,29 +1,34 @@
 package main
 
 import (
-	"tarea1/Config"
-	"tarea1/Models"
-	"tarea1/Routes"
-	"fmt"
-	
+  "github.com/gin-gonic/gin"
+  "tarea1/models"
+  "tarea1/controllers"
+)
 
-	"github.com/jinzhu/gorm"
-   )
-var err error
 func main() {
-	Config.DB, err = gorm.Open("mysql", 
-	Config.DbURL(Config.BuildDBConfig()))
-	
-	
-	if err != nil {
-		fmt.Println("Status:", err)
+  r := gin.Default()
+  models.ConnectDatabase()
+
+  grp1 := r.Group("/api")
+	{
+		grp1.GET("productos", controllers.FindProducts)
+		grp1.POST("producto", controllers.CreateProduct)
+		grp1.GET("producto/:id", controllers.GetProductByIDD)
+		grp1.PUT("producto/:id", controllers.UpdateProduct)
+		grp1.DELETE("producto/:id", controllers.DeleteProduct)
 	}
-	
-	defer Config.DB.Close()
-	Config.DB.AutoMigrate(&Models.Cliente{})
-	
-		r := Routes.SetupRouter()
-	//running
-	fmt.Println("jsdakljdal")
-	r.Run()
-   }
+
+  // Productos
+  /*r.GET("/api/productos", controllers.FindProducts)
+  r.POST("/api/producto", controllers.CreateProduct)
+  r.GET("/api/producto/:id_producto", controllers.FindProduct) 
+  r.PUT("/api/producto/:id_producto", controllers.UpdateProduct) 
+*/
+  // Clientes
+
+  r.POST("api/clientes/iniciar_sesion", controllers.LoginClient)
+  r.Run()
+
+  //
+}
