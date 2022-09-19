@@ -1,16 +1,17 @@
 package main
 
 import (
-  "github.com/gin-gonic/gin"
-  "tarea1/models"
-  "tarea1/controllers"
+	"tarea1/controllers"
+	"tarea1/models"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-  r := gin.Default()
-  models.ConnectDatabase()
+	r := gin.Default()
+	models.ConnectDatabase()
 
-  grp1 := r.Group("/api")
+	grp1 := r.Group("/api")
 	{
 		grp1.GET("productos", controllers.FindProducts)
 		grp1.POST("producto", controllers.CreateProduct)
@@ -19,16 +20,20 @@ func main() {
 		grp1.DELETE("producto/:id", controllers.DeleteProduct)
 	}
 
-  // Productos
-  /*r.GET("/api/productos", controllers.FindProducts)
-  r.POST("/api/producto", controllers.CreateProduct)
-  r.GET("/api/producto/:id_producto", controllers.FindProduct) 
-  r.PUT("/api/producto/:id_producto", controllers.UpdateProduct) 
-*/
-  // Clientes
+	// Productos
+	/*r.GET("/api/productos", controllers.FindProducts)
+	  r.POST("/api/producto", controllers.CreateProduct)
+	  r.GET("/api/producto/:id_producto", controllers.FindProduct)
+	  r.PUT("/api/producto/:id_producto", controllers.UpdateProduct)
+	*/
+	// Clientes
 
-  r.POST("api/clientes/iniciar_sesion", controllers.LoginClient)
-  r.Run()
+	r.POST("api/clientes/iniciar_sesion", controllers.LoginClient)
 
-  //
+	//Compra
+	r.POST("api/compras", controllers.CreateCompra)
+
+	r.Run()
+
+	//
 }
