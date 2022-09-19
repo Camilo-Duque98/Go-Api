@@ -1,9 +1,9 @@
 package models
 
 type Compra struct {
-	Id_compra  int     `json:"id_producto" gorm:"primaryKey;auto_increment;not_null"`
-	Id_cliente int     `json:"id_cliente"`
-	Cliente    Cliente `gorm:"foreignKey:Id_cliente"`
+	Id_compra  int `json:"id_producto" gorm:"primaryKey;auto_increment;not_null"`
+	Id_cliente int `json:"id_cliente"`
+	//Id_cliente `json:"id_cliente"` //gorm:"foreignKey:Id_cliente"`
 }
 
 func (p *Compra) TableName() string {

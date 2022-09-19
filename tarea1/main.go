@@ -32,6 +32,7 @@ func main() {
 
 	//Compra
 	r.POST("api/compras", controllers.CreateCompra)
+	//r.GET("api/compras", controllers.FindCompras)
 
 	r.Run()
 
