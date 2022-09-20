@@ -34,7 +34,7 @@ func CreateProduct(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		return
 	}
-
+	//fmt.Println(input)
 	producto := models.Producto{Nombre: input.Nombre, Cantidad_disponible: input.Cantidad_disponible, Precio_unitario: input.Precio_unitario} //
 	models.DB.Create(&producto)
 	c.JSON(http.StatusOK, gin.H{"data": producto})

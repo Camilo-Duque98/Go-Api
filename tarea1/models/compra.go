@@ -1,8 +1,9 @@
 package models
 
 type Compra struct {
-	Id_compra  int `json:"id_producto" gorm:"primaryKey;auto_increment;not_null"`
-	Id_cliente int `json:"id_cliente"`
+	Id_compra  int       `json:"id_producto" gorm:"primaryKey;auto_increment;not_null"`
+	Id_cliente int       `json:"id_cliente"`
+	Detalles   []Detalle `json:"productos"`
 	//Id_cliente `json:"id_cliente"` //gorm:"foreignKey:Id_cliente"`
 }
 

@@ -10,19 +10,22 @@ import (
 )
 
 type CreateCompraInput struct {
-	Id_cliente int `json:"id_cliente" binding:"required"`
+	Id_cliente    int            `json:"id_cliente" binding:"required"`
+	DetalleInputs []DetalleInput `json:"productos" binding:"required"`
 }
 
-/*type Detalle struct {
-	Id_compra   int `json:"id_compra" binding:"required"`
+type DetalleInput struct {
 	Id_producto int `json:"id_producto" binding:"required"`
 	Cantidad    int `json:"cantidad" binding:"required"`
-}*/
+}
 
 func CreateCompra(c *gin.Context) {
 	var cliente models.Cliente
+	var producto models.Producto
 	var input CreateCompraInput
+	//var detalle models.Detalle
 
+	var CompraID int
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		return
@@ -34,15 +37,24 @@ func CreateCompra(c *gin.Context) {
 		compra := models.Compra{Id_cliente: input.Id_cliente}
 		models.DB.Create(&compra)
 		//models.DB.Model(&compra).Association("cliente")
+		CompraID = compra.Id_compra
+
+		//detalle :=models.Detalle{Id_compra: CompraID, }
+
+		for _, array := range input.DetalleInputs {
+			fmt.Println("id_Producto", array.Id_producto)
+			if err := models.DB.Where("id_producto = ?", array.Id_producto).First(&producto).Error; err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "Producto no encontrado"})
+				return
+			} else {
+				detalle := models.Detalle{Id_compra: CompraID, Id_producto: array.Id_producto, Cantidad: array.Cantidad}
+				models.DB.Create(&detalle)
+			}
+
+		}
+
 		c.JSON(http.StatusOK, gin.H{"id_compra": compra.Id_compra})
-		fmt.Println(compra.Id_compra)
 	}
+	fmt.Println(CompraID)
+
 }
-
-/*func FindCompras(c *gin.Context) {
-	var compra []models.Compra
-	models.DB.Find(&compra)
-	models.DB.Model(&compra).Association("id_cliente")
-	c.JSON(http.StatusOK, gin.H{"data": compra})
-
-}*/
