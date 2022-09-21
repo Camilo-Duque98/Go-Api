@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"fmt"
+	//"fmt"
 
 	"net/http"
 	"tarea1/models"
@@ -20,10 +20,10 @@ type DetalleInput struct {
 }
 
 func CreateCompra(c *gin.Context) {
+
 	var cliente models.Cliente
 	var producto models.Producto
 	var input CreateCompraInput
-	//var detalle models.Detalle
 
 	var CompraID int
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -36,13 +36,9 @@ func CreateCompra(c *gin.Context) {
 	} else {
 		compra := models.Compra{Id_cliente: input.Id_cliente}
 		models.DB.Create(&compra)
-		//models.DB.Model(&compra).Association("cliente")
 		CompraID = compra.Id_compra
 
-		//detalle :=models.Detalle{Id_compra: CompraID, }
-
 		for _, array := range input.DetalleInputs {
-			fmt.Println("id_Producto", array.Id_producto)
 			if err := models.DB.Where("id_producto = ?", array.Id_producto).First(&producto).Error; err != nil {
 				c.JSON(http.StatusBadRequest, gin.H{"error": "Producto no encontrado"})
 				return
@@ -55,6 +51,5 @@ func CreateCompra(c *gin.Context) {
 
 		c.JSON(http.StatusOK, gin.H{"id_compra": compra.Id_compra})
 	}
-	fmt.Println(CompraID)
 
 }
