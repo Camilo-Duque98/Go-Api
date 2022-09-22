@@ -34,7 +34,7 @@ func main() {
 	r.POST("api/compras", controllers.CreateCompra)
 	//r.GET("api/compras", controllers.FindCompras)
 
-	r.Run(":5000")
+	r.Run()
 
 	//
 }
