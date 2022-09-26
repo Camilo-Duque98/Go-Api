@@ -32,6 +32,13 @@ type LoginStruct struct {
 	Contrasena string `json:"contrasena"`
 }
 
+type Result struct {
+	Mas_vendido    int `json:"producto_mas_vendido"`
+	Menos_vendido  int `json:"producto_menos_vendido"`
+	Mas_ganancia   int `json:"producto_mas_ganancia"`
+	Menos_ganancia int `json:"producto_menos_ganancia"`
+}
+
 func GetProducts() {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", "http://localhost:8080/api/productos", nil)
@@ -78,16 +85,12 @@ func GetStats() {
 		fmt.Print(err.Error())
 	}
 
-	fmt.Print(bodyBytes)
-	//json.Unmarshal(bodyBytes, &responseObject)
-	/*var responseObject Productos
-
+	var responseObject Result
 	json.Unmarshal(bodyBytes, &responseObject)
-	for _, array := range responseObject.Data {
-
-		fmt.Println(array.Id_producto, ";", array.Nombre, " por unidad;", array.Cantidad_disponible, " disponibles")
-	}*/
-
+	fmt.Println("Producto mas vendido: ", responseObject.Mas_vendido)
+	fmt.Println("Producto menos vendido: ", responseObject.Menos_vendido)
+	fmt.Println("Producto con mas ganancia: ", responseObject.Mas_ganancia)
+	fmt.Println("Producto con menos ganancia: ", responseObject.Menos_ganancia)
 }
 
 func PostProduct() string {
@@ -209,7 +212,6 @@ func ManagerOption() {
 		case 3:
 			DeleteProduct()
 		case 4:
-			fmt.Println("Aquí va a ver estadísticas")
 			GetStats()
 		case 5:
 			boolean = false
