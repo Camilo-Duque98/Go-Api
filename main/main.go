@@ -58,6 +58,38 @@ func GetProducts() {
 	}
 
 }
+
+// funcion estadistica
+func GetStats() {
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", "http://localhost:8080/api/estadisticas", nil)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Content-Type", "application/json")
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	defer resp.Body.Close()
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Print(err.Error())
+	}
+
+	fmt.Print(bodyBytes)
+	//json.Unmarshal(bodyBytes, &responseObject)
+	/*var responseObject Productos
+
+	json.Unmarshal(bodyBytes, &responseObject)
+	for _, array := range responseObject.Data {
+
+		fmt.Println(array.Id_producto, ";", array.Nombre, " por unidad;", array.Cantidad_disponible, " disponibles")
+	}*/
+
+}
+
 func PostProduct() string {
 
 	var name string
@@ -178,6 +210,7 @@ func ManagerOption() {
 			DeleteProduct()
 		case 4:
 			fmt.Println("Aquí va a ver estadísticas")
+			GetStats()
 		case 5:
 			boolean = false
 		default:

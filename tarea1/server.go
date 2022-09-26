@@ -18,6 +18,7 @@ func main() {
 		grp1.GET("producto/:id", controllers.GetProductByIDD)
 		grp1.PUT("producto/:id", controllers.UpdateProduct)
 		grp1.DELETE("producto/:id", controllers.DeleteProduct)
+		grp1.GET("estadisticas", controllers.GetStats)
 	}
 
 	// Productos

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"log"
 	"net/http"
 
 	"tarea1/models"
@@ -8,14 +9,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//Estructura de los productos
+// Estructura de los productos
 type CreateProductInput struct {
 	Nombre              string `json:"nombre" binding:"required"`
 	Cantidad_disponible int    `json:"cantidad_disponible" binding:"required"`
 	Precio_unitario     int    `json:"precio_unitario" binding:"required"`
 }
 
-//Cuando actualizamos productos
+// Cuando actualizamos productos
 type UpdateProductInput struct {
 	Nombre              string `json:"nombre" binding:"required"`
 	Cantidad_disponible int    `json:"cantidad_disponible" binding:"required"`
@@ -78,4 +79,20 @@ func UpdateProduct(c *gin.Context) {
 	models.DB.Model(&producto).Where("id_producto = ?", id_producto).Updates(input)
 
 	c.JSON(http.StatusOK, gin.H{"data": id_producto})
+}
+
+// funcion de estadistica
+func GetStats(c *gin.Context) {
+	var id_producto int64
+	//db, err := gorm.Open("mysql", "root:mysql1234567890@tcp(localhost:3306)/tarea_1_sd")
+	//if err != nil {
+	//	panic("Failed to connect to database!")
+	//}
+	rs := models.DB.Raw("select id_producto from detalle group by id_producto order by count(id_producto) desc limit 1").Scan(&id_producto)
+	if rs.Error != nil {
+		log.Println(rs.Error)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": id_producto})
+
 }
