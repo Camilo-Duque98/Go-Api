@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -21,6 +22,10 @@ type UpdateProductInput struct {
 	Nombre              string `json:"nombre" binding:"required"`
 	Cantidad_disponible int    `json:"cantidad_disponible" binding:"required"`
 	Precio_unitario     int    `json:"precio_unitario" binding:"required"`
+}
+
+type Result struct {
+	Id_producto int `json:"id_producto"`
 }
 
 func FindProducts(c *gin.Context) {
@@ -83,16 +88,18 @@ func UpdateProduct(c *gin.Context) {
 
 // funcion de estadistica
 func GetStats(c *gin.Context) {
-	var id_producto int64
+	var Resultado Result
 	//db, err := gorm.Open("mysql", "root:mysql1234567890@tcp(localhost:3306)/tarea_1_sd")
 	//if err != nil {
 	//	panic("Failed to connect to database!")
 	//}
-	rs := models.DB.Raw("select id_producto from detalle group by id_producto order by count(id_producto) desc limit 1").Scan(&id_producto)
+	//rs := models.DB.Raw("SELECT id_producto FROM producto WHERE id_producto = 8").Scan(&Resultado)
+	rs := models.DB.Raw("SELECT id_producto FROM detalle GROUP BY id_producto ORDER BY COUNT(id_producto) DESC LIMIT 1;").Scan(&Resultado)
 	if rs.Error != nil {
 		log.Println(rs.Error)
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": id_producto})
+	fmt.Println(Resultado)
+	c.JSON(http.StatusOK, gin.H{"data": Resultado})
 
 }
