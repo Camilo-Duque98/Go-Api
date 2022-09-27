@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type Productos struct {
@@ -37,6 +38,16 @@ type Result struct {
 	Menos_vendido  int `json:"producto_menos_vendido"`
 	Mas_ganancia   int `json:"producto_mas_ganancia"`
 	Menos_ganancia int `json:"producto_menos_ganancia"`
+}
+
+type Compra struct {
+	Id_cliente int       `json:"id_cliente"`
+	Carro      []Carrito `json: "productos"`
+}
+
+type Carrito struct {
+	Id_producto int `json:"id_producto"`
+	Cantidad    int `json:"cantidad"`
 }
 
 func GetProducts() {
@@ -91,6 +102,40 @@ func GetStats() {
 	fmt.Println("Producto menos vendido: ", responseObject.Menos_vendido)
 	fmt.Println("Producto con mas ganancia: ", responseObject.Mas_ganancia)
 	fmt.Println("Producto con menos ganancia: ", responseObject.Menos_ganancia)
+}
+
+func BuyProduct(id int) {
+
+	var cant int
+	var compra string
+	var idProducto int
+	var cantidad int
+	var comprados int //Contador de productos comprados
+	var total int     //Contador del valor total comprado
+
+	var carrito Carrito
+
+	fmt.Println("Ingrese cantidad de productos a comprar: ")
+	fmt.Scan(&cant)
+	for i := 1; i <= cant; i++ {
+		fmt.Printf("Ingrese producto %d par id-cantidad: ", i)
+		fmt.Scan(&compra)                       //Formato: idProducto-cantidad
+		separador := strings.Split(compra, "-") //split es la lista del string separada por -
+		_, _ = fmt.Sscan(separador[0], &idProducto)
+		_, _ = fmt.Sscan(separador[1], &cantidad)
+		//Almacenar la opción en la lista:
+		carrito.Id_producto = idProducto
+		carrito.Cantidad = cantidad
+		Compra.Carro = append(Compra.carrito, Carro)
+
+		//etalle.Cantidad = cantidad
+
+		comprados += cantidad
+	}
+
+	fmt.Println("Gracias por su compra!")
+	fmt.Printf("Cantidad de productos comprados: %d\n", comprados)
+	fmt.Printf("Monto total de la compra: %d\n", total)
 }
 
 func PostProduct() string {
@@ -184,7 +229,7 @@ func ClientOption() {
 		case 1:
 			GetProducts()
 		case 2:
-			fmt.Println("aqui supuestamente va hacer compra")
+			BuyProduct(4)
 		case 3:
 			boolean = false
 		}
