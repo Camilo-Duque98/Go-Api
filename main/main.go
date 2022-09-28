@@ -14,7 +14,9 @@ import (
 type Productos struct {
 	Data []Producto `json:"data"`
 }
-
+type Productos2 struct {
+	Data Producto `json:"data"`
+}
 type Producto struct {
 	Id_producto         int    `json:"id_producto"`
 	Nombre              string `json:"nombre"`
@@ -79,7 +81,7 @@ func GetProducts() {
 	json.Unmarshal(bodyBytes, &responseObject)
 	for _, array := range responseObject.Data {
 
-		fmt.Println(array.Id_producto, ";", array.Nombre, " por unidad;", array.Cantidad_disponible, " disponibles")
+		fmt.Println(array.Id_producto, ";", array.Nombre, ";", array.Precio_unitario, " por unidad;", array.Cantidad_disponible, " disponibles")
 	}
 
 }
@@ -113,7 +115,7 @@ func GetStats() {
 
 //----------------------------------------------------------------------------------------------------------------------------------------------
 
-/*func CheckProduct(ID_PRODUCTO string) bool {
+func CheckProduct(ID_PRODUCTO string) (flag bool, cantidad int, precio int) {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", "http://localhost:8080/api/producto/"+ID_PRODUCTO, nil)
 	if err != nil {
@@ -130,44 +132,118 @@ func GetStats() {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+	var responseObject Productos2
+	json.Unmarshal(bodyBytes, &responseObject)
 	bodyString := string(bodyBytes)
-	//fmt.Println(bodyString)
 	if bodyString != "{\"error\":\"RecordNotFound\"}" {
-		return true
+		cantidad = responseObject.Data.Cantidad_disponible
+		precio := responseObject.Data.Precio_unitario
+		flag = true
+		return flag, cantidad, precio
 	} else {
-		return false
+		flag = false
+		return flag, 0, 0
 	}
 }
+func Verify(array []bool) (Id_Producto int, flag bool) {
 
-/*func BuyProducts() {
+	flag = true
+	fmt.Println(array)
+	for i := 0; i < len(array); i++ {
+		if array[i] == false {
+			flag = false
+			Id_Producto = i
+		}
+
+	}
+	return Id_Producto, flag
+}
+
+func BuyProducts() {
 
 	var cantidadProductos int
 	fmt.Print("Ingrese cantidad de productos a comprar: ")
 	fmt.Scanln(&cantidadProductos)
 	cont := 0
-
-	var flag []bool
-	var idProduct []string
+	//var gasto int
 
 	var compra Compra
 	compra.Id_cliente = ID_Session
+
 	var producto string
+
+	var carrito Carrito
+	var gasto int
+	cantidadTotal := 0
+
 	for cont < cantidadProductos {
 
 		fmt.Printf("Ingrese producto %d par id-cantidad: ", cont+1)
 		fmt.Scan(&producto)
 		separador := strings.Split(producto, "-")
-		funcion := CheckProduct(separador[0])
-		idProduct = append(idProduct, separador[0])
-		flag = append(flag, funcion)
-		fmt.Println(flag)
+		booleano, cantidadProductosStock, precio := CheckProduct(separador[0])
+		//fmt.Println("Probando: ", cantidadProductosStock)
+		//idProduct = append(idProduct, separador[0])
+		//flag = append(flag, funcion)
+		//num, _ := strconv.ParseInt(separador[1], 6, 12)
+		//fmt.Println(num)
+		//cantidad = append(cantidad, int(num))
 
+		//positionId, comprobate := Verify(flag)
+		//fmt.Println(comprobate)
+		//fmt.Println(positionId)
+		if booleano == false {
+			fmt.Printf("No existe el producto con id %s\n", separador[0])
+			//fmt.Println("Compra rechazada")
+			//fmt.Println("escriba \"y\" si desea agregar un nuevo producto, y \"n\" si es que no: ")
+			//fmt.Scanln(&opcion)
+			//break
+		} else {
+			num, _ := strconv.ParseInt(separador[0], 10, 0)
+			carrito.Id_producto = int(num)
+			//fmt.Println(separador[0])
+			//fmt.Println(num)
+			cant, _ := strconv.ParseInt(separador[1], 10, 0)
+			cantidadTotal += int(cant)
+			if cantidadTotal < cantidadProductosStock {
+				carrito.Cantidad = int(cant)
+				compra.Carro = append(compra.Carro, carrito)
+				gasto += int(cant) * precio
+			}
+			//carrito.Id_producto = idProducto
+			//carrito.Cantidad = cantidad
+			//comprita.Carro = append(comprita.Carro, carrito)
+		}
 		cont++
+	}
+	fmt.Println()
+	jsonReq, err := json.Marshal(compra)
+	resp, err := http.Post("http://localhost:8080/api/compras", "aplication/json; charset=utf-8", bytes.NewBuffer(jsonReq))
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer resp.Body.Close()
+	bodyBytes, _ := ioutil.ReadAll(resp.Body)
+	bodyString := string(bodyBytes)
+
+	if bodyString == "{\"error\":\"Producto no encontrado\"}" {
+		fmt.Println("Ingrese el id de los productos correctamente")
+
+	} else {
+		//fmt.Println("Respuesta: ", bodyString)
+		if bodyString != "{\"error\":\"productos insuficientes\"}" && bodyString != "{\"data\":\"Key: 'CreateCompraInput.DetalleInputs' Error:Field validation for 'DetalleInputs' failed on the 'required' tag\"}" {
+			fmt.Println("Monto total de la compra: ", gasto)
+			fmt.Println("Cantidad de productos comprados: ", cantidadTotal)
+		} else {
+			fmt.Println("Productos sin stock")
+		}
+		//fmt.Println(compra)
 
 	}
-}*/
+}
 
-func BuyProduct(id int) {
+/*func BuyProduct(id int) {
 
 	var cant int
 	var compra string
@@ -217,7 +293,7 @@ func BuyProduct(id int) {
 	}
 
 }
-
+*/
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 func PostProduct() string {
 
@@ -311,7 +387,7 @@ func ClientOption() {
 		case 1:
 			GetProducts()
 		case 2:
-			BuyProduct(ID_Session)
+			BuyProducts()
 		case 3:
 			boolean = false
 		}

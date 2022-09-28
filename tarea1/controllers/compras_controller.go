@@ -62,11 +62,11 @@ func CreateCompra(c *gin.Context) {
 
 	var CompraID int
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"data": "error"})
 		return
 	}
 	if err := models.DB.Where("id_cliente = ?", input.Id_cliente).First(&cliente).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "no funca"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "error"})
 		return
 	} else {
 		compra := models.Compra{Id_cliente: input.Id_cliente}
