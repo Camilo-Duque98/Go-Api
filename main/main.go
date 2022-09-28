@@ -42,13 +42,20 @@ type Result struct {
 
 type Compra struct {
 	Id_cliente int       `json:"id_cliente"`
-	Carro      []Carrito `json: "productos"`
+	Carro      []Carrito `json:"productos"`
 }
 
 type Carrito struct {
 	Id_producto int `json:"id_producto"`
 	Cantidad    int `json:"cantidad"`
 }
+
+type Check struct {
+	Id_producto string
+	flag        bool
+}
+
+var ID_Session int
 
 func GetProducts() {
 	client := &http.Client{}
@@ -104,6 +111,62 @@ func GetStats() {
 	fmt.Println("Producto con menos ganancia: ", responseObject.Menos_ganancia)
 }
 
+//----------------------------------------------------------------------------------------------------------------------------------------------
+
+/*func CheckProduct(ID_PRODUCTO string) bool {
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", "http://localhost:8080/api/producto/"+ID_PRODUCTO, nil)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Content-Type", "application/json")
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	defer resp.Body.Close()
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	bodyString := string(bodyBytes)
+	//fmt.Println(bodyString)
+	if bodyString != "{\"error\":\"RecordNotFound\"}" {
+		return true
+	} else {
+		return false
+	}
+}
+
+/*func BuyProducts() {
+
+	var cantidadProductos int
+	fmt.Print("Ingrese cantidad de productos a comprar: ")
+	fmt.Scanln(&cantidadProductos)
+	cont := 0
+
+	var flag []bool
+	var idProduct []string
+
+	var compra Compra
+	compra.Id_cliente = ID_Session
+	var producto string
+	for cont < cantidadProductos {
+
+		fmt.Printf("Ingrese producto %d par id-cantidad: ", cont+1)
+		fmt.Scan(&producto)
+		separador := strings.Split(producto, "-")
+		funcion := CheckProduct(separador[0])
+		idProduct = append(idProduct, separador[0])
+		flag = append(flag, funcion)
+		fmt.Println(flag)
+
+		cont++
+
+	}
+}*/
+
 func BuyProduct(id int) {
 
 	var cant int
@@ -112,32 +175,50 @@ func BuyProduct(id int) {
 	var cantidad int
 	var comprados int //Contador de productos comprados
 	var total int     //Contador del valor total comprado
-
+	var comprita Compra
 	var carrito Carrito
+	//var carrito Carrito
 
 	fmt.Println("Ingrese cantidad de productos a comprar: ")
+
 	fmt.Scan(&cant)
+	comprita.Id_cliente = ID_Session
+	comprita.Carro = []Carrito{}
 	for i := 1; i <= cant; i++ {
 		fmt.Printf("Ingrese producto %d par id-cantidad: ", i)
 		fmt.Scan(&compra)                       //Formato: idProducto-cantidad
 		separador := strings.Split(compra, "-") //split es la lista del string separada por -
 		_, _ = fmt.Sscan(separador[0], &idProducto)
 		_, _ = fmt.Sscan(separador[1], &cantidad)
-		//Almacenar la opción en la lista:
 		carrito.Id_producto = idProducto
 		carrito.Cantidad = cantidad
-		Compra.Carro = append(Compra.carrito, Carro)
-
-		//etalle.Cantidad = cantidad
+		comprita.Carro = append(comprita.Carro, carrito)
 
 		comprados += cantidad
 	}
+	jsonReq, err := json.Marshal(comprita)
+	resp, err := http.Post("http://localhost:8080/api/compras", "aplication/json; charset=utf-8", bytes.NewBuffer(jsonReq))
 
-	fmt.Println("Gracias por su compra!")
-	fmt.Printf("Cantidad de productos comprados: %d\n", comprados)
-	fmt.Printf("Monto total de la compra: %d\n", total)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer resp.Body.Close()
+	bodyBytes, _ := ioutil.ReadAll(resp.Body)
+
+	bodyString := string(bodyBytes)
+	if bodyString == "{\"error\":\"Producto no encontrado\"}" {
+		fmt.Println("Ingrese el id de los productos correctamente")
+
+	} else {
+		fmt.Println("Gracias por su compra!")
+		fmt.Printf("Cantidad de productos comprados: %d\n", comprados)
+		fmt.Printf("Monto total de la compra: %d\n", total)
+
+	}
+
 }
 
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 func PostProduct() string {
 
 	var name string
@@ -209,6 +290,7 @@ func Login() bool {
 
 	bodyString := string(bodyBytes)
 	if bodyString == "{\"acceso valido\":true}" {
+		ID_Session = id
 		return true
 	} else {
 		return false
@@ -229,7 +311,7 @@ func ClientOption() {
 		case 1:
 			GetProducts()
 		case 2:
-			BuyProduct(4)
+			BuyProduct(ID_Session)
 		case 3:
 			boolean = false
 		}
@@ -288,7 +370,6 @@ func ClientSession() {
 }
 
 func main() {
-
 	boolean := true
 	//presentacion
 
