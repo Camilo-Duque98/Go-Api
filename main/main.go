@@ -182,27 +182,11 @@ func BuyProducts() {
 		fmt.Scan(&producto)
 		separador := strings.Split(producto, "-")
 		booleano, cantidadProductosStock, precio := CheckProduct(separador[0])
-		//fmt.Println("Probando: ", cantidadProductosStock)
-		//idProduct = append(idProduct, separador[0])
-		//flag = append(flag, funcion)
-		//num, _ := strconv.ParseInt(separador[1], 6, 12)
-		//fmt.Println(num)
-		//cantidad = append(cantidad, int(num))
-
-		//positionId, comprobate := Verify(flag)
-		//fmt.Println(comprobate)
-		//fmt.Println(positionId)
 		if booleano == false {
 			fmt.Printf("No existe el producto con id %s\n", separador[0])
-			//fmt.Println("Compra rechazada")
-			//fmt.Println("escriba \"y\" si desea agregar un nuevo producto, y \"n\" si es que no: ")
-			//fmt.Scanln(&opcion)
-			//break
 		} else {
 			num, _ := strconv.ParseInt(separador[0], 10, 0)
 			carrito.Id_producto = int(num)
-			//fmt.Println(separador[0])
-			//fmt.Println(num)
 			cant, _ := strconv.ParseInt(separador[1], 10, 0)
 			cantidadTotal += int(cant)
 			if cantidadTotal < cantidadProductosStock {
@@ -210,12 +194,12 @@ func BuyProducts() {
 				compra.Carro = append(compra.Carro, carrito)
 				gasto += int(cant) * precio
 			}
-			//carrito.Id_producto = idProducto
-			//carrito.Cantidad = cantidad
-			//comprita.Carro = append(comprita.Carro, carrito)
 		}
 		cont++
 	}
+	fmt.Println(compra)
+
+	//-------------------------------No tocar
 	fmt.Println()
 	jsonReq, err := json.Marshal(compra)
 	resp, err := http.Post("http://localhost:8080/api/compras", "aplication/json; charset=utf-8", bytes.NewBuffer(jsonReq))
@@ -232,11 +216,11 @@ func BuyProducts() {
 
 	} else {
 		//fmt.Println("Respuesta: ", bodyString)
-		if bodyString != "{\"error\":\"productos insuficientes\"}" && bodyString != "{\"data\":\"Key: 'CreateCompraInput.DetalleInputs' Error:Field validation for 'DetalleInputs' failed on the 'required' tag\"}" {
+		if bodyString != "{\"error\":\"error\"}" && bodyString != "{\"data\":\"error\"}" && bodyString != "{\"data\":\"Key: 'CreateCompraInput.DetalleInputs' Error:Field validation for 'DetalleInputs' failed on the 'required' tag\"}" {
 			fmt.Println("Monto total de la compra: ", gasto)
 			fmt.Println("Cantidad de productos comprados: ", cantidadTotal)
 		} else {
-			fmt.Println("Productos sin stock")
+			fmt.Println("Producto/s sin stock")
 		}
 		//fmt.Println(compra)
 
