@@ -38,14 +38,12 @@ func CantidadData(ID_PRODUCTO int) int {
 }
 func UpdateProductIncrease(ID_PRODUCTO int, CantidadProductos int, CantidadCompra int) int {
 	var products models.Producto
-	//var updateProduct UpdateProducts
 
 	if err := models.DB.Where("id_producto = ?", ID_PRODUCTO).First(&products).Error; err != nil {
 		fmt.Println(err)
 		return 0
 	}
 	lista := UpdateProductInput{products.Nombre, CantidadProductos - CantidadCompra, products.Precio_unitario}
-	//fmt.Println(updateProduct)
 	models.DB.Model(&products).Where("id_producto = ?", ID_PRODUCTO).Updates(lista)
 	return products.Cantidad_disponible
 }
@@ -118,7 +116,6 @@ func CreateCompra(c *gin.Context) {
 				detalle := models.Detalle{Id_compra: CompraID, Id_producto: array.Id_producto, Cantidad: array.Cantidad}
 				models.DB.Create(&detalle)
 			}
-
 		}
 		c.JSON(http.StatusOK, gin.H{"id_compra": compra.Id_compra})
 	}

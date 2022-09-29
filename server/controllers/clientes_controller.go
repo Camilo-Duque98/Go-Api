@@ -23,7 +23,6 @@ func LoginClient(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		return
 	}
-
 	if err := models.DB.Where("id_cliente = ?", input.Id_cliente).Where("Contrasena = ?", input.Contrasena).First(&cliente).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "no funca"})
 		return
