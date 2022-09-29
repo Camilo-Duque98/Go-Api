@@ -10,7 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Estructura de los productos
 type CreateProductInput struct {
 	Nombre              string `json:"nombre" binding:"required"`
 	Cantidad_disponible int    `json:"cantidad_disponible" binding:"required"`
@@ -73,8 +72,6 @@ func UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	//Validamos el input
-
 	var input UpdateProductInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -86,7 +83,6 @@ func UpdateProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": id_producto})
 }
 
-// funcion de estadistica
 func GetStats(c *gin.Context) {
 	var Resultado Result
 	var Resultado2 Result
@@ -102,5 +98,4 @@ func GetStats(c *gin.Context) {
 	}
 	fmt.Println(Resultado)
 	c.JSON(http.StatusOK, gin.H{"producto_mas_vendido": Resultado.Id_producto, "producto_menos_vendido": Resultado2.Id_producto, "producto_mas_ganancia": Resultado3.Id_producto, "producto_menos_ganancia": Resultado4.Id_producto})
-
 }

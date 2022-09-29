@@ -10,6 +10,7 @@ import (
 func main() {
 	r := gin.Default()
 	models.ConnectDatabase()
+	//gin.SetMode(gin.ReleaseMode)
 
 	grp1 := r.Group("/api")
 	{
@@ -21,21 +22,9 @@ func main() {
 		grp1.GET("estadisticas", controllers.GetStats)
 	}
 
-	// Productos
-	/*r.GET("/api/productos", controllers.FindProducts)
-	  r.POST("/api/producto", controllers.CreateProduct)
-	  r.GET("/api/producto/:id_producto", controllers.FindProduct)
-	  r.PUT("/api/producto/:id_producto", controllers.UpdateProduct)
-	*/
-	// Clientes
-
 	r.POST("api/clientes/iniciar_sesion", controllers.LoginClient)
 
-	//Compra
 	r.POST("api/compras", controllers.CreateCompra)
-	//r.GET("api/compras", controllers.FindCompras)
 
-	r.Run()
-
-	//
+	r.Run(":5000")
 }
