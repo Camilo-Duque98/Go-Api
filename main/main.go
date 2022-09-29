@@ -159,6 +159,16 @@ func Verify(array []bool) (Id_Producto int, flag bool) {
 	return Id_Producto, flag
 }
 
+func Compare(array []Carrito, id_producto int, cantidad int) []Carrito {
+	for _, arreglos := range array {
+		fmt.Println(arreglos)
+		if arreglos.Id_producto == id_producto {
+			arreglos.Cantidad += cantidad
+		}
+	}
+	return array
+}
+
 func BuyProducts() {
 
 	var cantidadProductos int
@@ -176,6 +186,10 @@ func BuyProducts() {
 	var gasto int
 	cantidadTotal := 0
 
+	//creamos un arreglo para los id's y flagg
+	var arrayIDS []int
+	flagg := true
+
 	for cont < cantidadProductos {
 
 		fmt.Printf("Ingrese producto %d par id-cantidad: ", cont+1)
@@ -185,15 +199,40 @@ func BuyProducts() {
 		if booleano == false {
 			fmt.Printf("No existe el producto con id %s\n", separador[0])
 		} else {
+
 			num, _ := strconv.ParseInt(separador[0], 10, 0)
-			carrito.Id_producto = int(num)
 			cant, _ := strconv.ParseInt(separador[1], 10, 0)
-			cantidadTotal += int(cant)
-			if cantidadTotal < cantidadProductosStock {
-				carrito.Cantidad = int(cant)
-				compra.Carro = append(compra.Carro, carrito)
-				gasto += int(cant) * precio
+			//vemos si ya existe el producto
+			for _, element := range arrayIDS {
+				if element == int(num) {
+					flagg = false
+				}
 			}
+			if flagg {
+				if cantidadTotal < cantidadProductosStock {
+					//value := Compare(compra.Carro, int(num), int(cant))
+					carrito.Id_producto = int(num)
+					cantidadTotal += int(cant)
+					carrito.Cantidad = int(cant)
+					compra.Carro = append(compra.Carro, carrito)
+					gasto += int(cant) * precio
+					//fmt.Println("Probando valores: ", value)
+				}
+			} else { //agregamos este else
+				for _, a := range compra.Carro {
+					if a.Id_producto == carrito.Id_producto {
+						if a.Cantidad+int(cant) < cantidadProductosStock {
+							a.Cantidad += 1
+							fmt.Println("Sumando valores: ", a)
+							gasto += int(cant) * precio
+						}
+					}
+				}
+				flagg = true
+
+			}
+			//agregamos el arrayIDS
+			arrayIDS = append(arrayIDS, int(num))
 		}
 		cont++
 	}
