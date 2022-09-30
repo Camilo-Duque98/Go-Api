@@ -10,8 +10,6 @@ import (
 func main() {
 	r := gin.Default()
 	models.ConnectDatabase()
-	//gin.SetMode(gin.ReleaseMode)
-
 	grp1 := r.Group("/api")
 	{
 		grp1.GET("productos", controllers.FindProducts)

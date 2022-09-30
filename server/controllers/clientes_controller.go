@@ -16,7 +16,6 @@ type LoginClientInput struct {
 
 func LoginClient(c *gin.Context) {
 	var cliente models.Cliente
-	//nombre := c.Request.URL.Query().Get("nombre")
 	var input LoginClientInput
 	fmt.Println(input)
 	if err := c.ShouldBindJSON(&input); err != nil {

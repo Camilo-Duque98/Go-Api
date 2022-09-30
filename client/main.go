@@ -173,28 +173,21 @@ func BuyProducts() {
 				}
 			}
 			if flagg {
-				fmt.Println(cantidadProductosStock)
-				fmt.Println(cantidadTotal)
 				if int(cant) < cantidadProductosStock {
 					carrito.Id_producto = int(num)
 					cantidadTotal += int(cant)
 					carrito.Cantidad = int(cant)
 					compra.Carro = append(compra.Carro, carrito)
-					fmt.Println("Se crea el producto: ", compra.Carro)
 					gasto += int(cant) * precio
 				}
 			} else {
-				fmt.Println("Producto repetido, valor de la flagg: ", flagg)
 				var aux Carrito
 				var position int
-				fmt.Println("Carrito que es: ", carrito)
 				for pos, a := range compra.Carro {
 					if a.Id_producto == int(num) {
 						if a.Cantidad+int(cant) < cantidadProductosStock {
-							fmt.Print("ID entrante: ", a.Id_producto)
 							a.Cantidad += int(cant)
 							cantidadTotal += int(cant)
-							fmt.Println("Sumando valores: ", a)
 							gasto += int(cant) * precio
 							position = pos
 							aux = a
@@ -215,8 +208,6 @@ func BuyProducts() {
 		}
 		cont++
 	}
-	fmt.Println("Productos que estamos comprando: ", compra)
-
 	fmt.Println()
 	jsonReq, err := json.Marshal(compra)
 	resp, err := http.Post("http://localhost:5000/api/compras", "aplication/json; charset=utf-8", bytes.NewBuffer(jsonReq))
@@ -238,7 +229,7 @@ func BuyProducts() {
 	}
 }
 
-//-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------------------------------------------------------
 func PostProduct() string {
 
 	var name string
@@ -386,8 +377,6 @@ func ClientSession() {
 
 func main() {
 	boolean := true
-	//presentacion
-
 	fmt.Println("Bienvenido")
 	for boolean == true {
 		fmt.Println()
