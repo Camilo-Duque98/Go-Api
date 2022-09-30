@@ -268,10 +268,7 @@ func DeleteProduct() {
 	}
 
 	defer resp.Body.Close()
-	bodyBytes, _ := ioutil.ReadAll(resp.Body)
-
-	bodyString := string(bodyBytes)
-	fmt.Println(bodyString)
+	fmt.Println("Producto Eliminado")
 }
 func Login() bool {
 	var id int
