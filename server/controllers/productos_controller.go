@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -88,14 +87,13 @@ func GetStats(c *gin.Context) {
 	var Resultado2 Result
 	var Resultado3 Result
 	var Resultado4 Result
-	rs := models.DB.Raw("SELECT id_producto FROM detalle GROUP BY id_producto ORDER BY COUNT(id_producto) DESC LIMIT 1").Scan(&Resultado)
-	rs2 := models.DB.Raw("SELECT id_producto FROM detalle GROUP BY id_producto ORDER BY COUNT(id_producto) ASC LIMIT 1").Scan(&Resultado2)
-	rs3 := models.DB.Raw("select p.nombre,d.id_producto, sum(d.cantidad)*p.precio_unitario as total from detalle d inner join producto p on p.id_producto = d.id_producto group by d.id_producto order by count(d.id_producto) desc limit 1;").Scan(&Resultado3)
-	rs4 := models.DB.Raw("select p.nombre,d.id_producto, sum(d.cantidad)*p.precio_unitario as total from detalle d inner join producto p on p.id_producto = d.id_producto group by d.id_producto order by count(d.id_producto) asc limit 1;").Scan(&Resultado4)
+	rs := models.DB.Raw("select id_producto from detalle group by id_producto order by sum(cantidad) DESC LIMIT 1;").Scan(&Resultado)
+	rs2 := models.DB.Raw("select id_producto from detalle group by id_producto order by sum(cantidad) ASC LIMIT 1").Scan(&Resultado2)
+	rs3 := models.DB.Raw("select d.id_producto from detalle d inner join producto p on p.id_producto = d.id_producto group by d.id_producto order by sum(d.cantidad)*p.precio_unitario desc limit 1").Scan(&Resultado3)
+	rs4 := models.DB.Raw("select d.id_producto from detalle d inner join producto p on p.id_producto = d.id_producto group by d.id_producto order by sum(d.cantidad)*p.precio_unitario asc limit 1").Scan(&Resultado4)
 	if rs.Error != nil && rs2.Error != nil && rs3.Error != nil && rs4.Error != nil {
 		log.Println(rs.Error)
 		return
 	}
-	fmt.Println(Resultado)
 	c.JSON(http.StatusOK, gin.H{"producto_mas_vendido": Resultado.Id_producto, "producto_menos_vendido": Resultado2.Id_producto, "producto_mas_ganancia": Resultado3.Id_producto, "producto_menos_ganancia": Resultado4.Id_producto})
 }

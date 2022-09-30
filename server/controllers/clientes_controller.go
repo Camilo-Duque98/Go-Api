@@ -3,7 +3,6 @@ package controllers
 import (
 	"net/http"
 
-	"fmt"
 	"tarea1/models"
 
 	"github.com/gin-gonic/gin"
@@ -17,7 +16,6 @@ type LoginClientInput struct {
 func LoginClient(c *gin.Context) {
 	var cliente models.Cliente
 	var input LoginClientInput
-	fmt.Println(input)
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": err.Error()})
 		return
@@ -26,8 +24,8 @@ func LoginClient(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "no funca"})
 		return
 	} else {
-		err := models.DB.Where("id_cliente = ?", input.Id_cliente).First(&cliente)
-		fmt.Println(err)
+		//err := models.DB.Where("id_cliente = ?", input.Id_cliente).First(&cliente)
+		//fmt.Println(err)
 		c.JSON(http.StatusOK, gin.H{"acceso valido": true})
 	}
 }
