@@ -79,6 +79,7 @@ func GetProducts() {
 	}
 }
 
+// Borrar
 // funcion estadistica
 func GetStats() {
 	client := &http.Client{}
