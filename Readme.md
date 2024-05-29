@@ -1,10 +1,5 @@
-# Tarea 1 sistemas distribuidos
-### **Integrantes**
-| Nombre y Apellido | Rol         |
-|-------------------|-------------|
-| Javier Aguayo     | 201873056-4 |
-| Felipe Cruz       |             |
-| Camilo Villar     | 201873096-3 |  
+# Sistemas distribuidos proyecto
+
 
 # Pequeña explicación
 Ántes de ejecutar el programa, queremos informar que el programa lo dividimos en dos carpetas, servidor y cliente:  
